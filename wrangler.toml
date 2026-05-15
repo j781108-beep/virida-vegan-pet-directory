@@ -1,6 +1,14 @@
-# Wrangler config for Cloudflare Pages deployment.
-# Run `wrangler pages deploy dist` after `npm run build` to deploy manually,
-# or let Cloudflare Pages auto-build from git (recommended).
+# Wrangler config — deploys the static `dist/` folder as a Cloudflare Worker
+# with Static Assets (the new unified Workers + Pages model).
+#
+# This config is "assets-only": no JS handler, just serves the static site.
+# Cloudflare runs `npm run build` (produces dist/) then `npx wrangler deploy`
+# (uploads dist/ to the global edge network).
+
 name = "virida-vegan-pet-directory"
 compatibility_date = "2026-05-15"
-pages_build_output_dir = "./dist"
+
+# Static assets configuration — required for static sites.
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
