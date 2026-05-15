@@ -2,26 +2,37 @@
 /**
  * Privacy-friendly analytics — Plausible (no cookies, GDPR/PDPA compliant).
  *
- * To activate:
- *   1. Sign up at https://plausible.io (or self-host)
- *   2. Add your domain
- *   3. Set PUBLIC_PLAUSIBLE_DOMAIN env var (e.g. directory.virida.pet)
- *   4. Optional: PUBLIC_PLAUSIBLE_HOST if self-hosted
+ * Uses Plausible's site-key snippet format. The script URL contains a unique
+ * identifier for directory.virida.pet — that's why no `domain` argument is
+ * needed in `plausible.init()`.
  *
- * Why Plausible over Google Analytics:
- *   - No cookies → no consent banner needed (Singapore PDPA / TW PDPA / EU GDPR)
- *   - 1 KB script vs ~80 KB GA = better Core Web Vitals
- *   - APAC pet parents increasingly cookie-allergic
+ * Tracking enabled (configured in Plausible dashboard):
+ *   - Page views
+ *   - Outbound links  ← KEY: tracks every click to virida.pet (conversion signal)
+ *   - File downloads
+ *   - Form submissions
+ *
+ * Only loads in production builds, NOT during `npm run dev`. This keeps local
+ * dev pageviews out of analytics and avoids dev-time CSP issues.
+ *
+ * To switch sites later (e.g. self-host), edit the script `src` URL below.
  */
-const domain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
-const host = import.meta.env.PUBLIC_PLAUSIBLE_HOST ?? 'https://plausible.io';
+
+const isProd = import.meta.env.PROD;
 ---
 
-{domain && (
-  <script
-    is:inline
-    defer
-    data-domain={domain}
-    src={`${host}/js/script.outbound-links.js`}
-  />
-)}
+{
+  isProd && (
+    <>
+      {/* Privacy-friendly analytics by Plausible */}
+      <script
+        is:inline
+        async
+        src="https://plausible.io/js/pa-GC0oalG_KDJOzZjB7Sxn0.js"
+      />
+      <script is:inline>
+        {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
+      </script>
+    </>
+  )
+}
