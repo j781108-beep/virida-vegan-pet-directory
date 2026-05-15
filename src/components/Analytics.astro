@@ -14,8 +14,6 @@
  *
  * Only loads in production builds, NOT during `npm run dev`. This keeps local
  * dev pageviews out of analytics and avoids dev-time CSP issues.
- *
- * To switch sites later (e.g. self-host), edit the script `src` URL below.
  */
 
 const isProd = import.meta.env.PROD;
@@ -30,9 +28,7 @@ const isProd = import.meta.env.PROD;
         async
         src="https://plausible.io/js/pa-GC0oalG_KDJOzZjB7Sxn0.js"
       />
-      <script is:inline>
-        {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init()`}
-      </script>
+      <script is:inline>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init();</script>
     </>
   )
 }
