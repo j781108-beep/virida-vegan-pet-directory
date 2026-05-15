@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'How to Choose Vegan Dog Food: A 2026 Buyer\'s Guide',
+  description: 'Everything pet parents need to know to safely transition a dog to a plant-based diet — what to look for, common mistakes, and the questions to ask any brand.',
+  author: { '@type': 'Organization', name: 'VIRIDA' },
+  datePublished: '2026-05-15',
+  dateModified: '2026-05-15',
+};
+---
+
+<BaseLayout
+  title="How to Choose Vegan Dog Food: A 2026 Buyer's Guide"
+  description="Practical step-by-step guide for safely transitioning a dog to a plant-based diet. AAFCO requirements, key nutrients, brand comparison, common mistakes."
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <p class="text-sm text-leaf-600 font-semibold uppercase tracking-wider">Buying guide</p>
+    <h1 class="mt-2 text-4xl sm:text-5xl font-display font-extrabold text-leaf-900">
+      How to choose vegan dog food
+    </h1>
+    <p class="mt-3 text-leaf-600">A 2026 buyer's guide · 8-minute read</p>
+
+    <div class="prose mt-8 text-lg text-leaf-800 leading-relaxed">
+      <p class="text-xl">
+        Dogs are <strong>omnivores</strong> — unlike cats, they can thrive on a
+        well-formulated plant-based diet. But "well-formulated" is the key
+        phrase. Here's how to evaluate any vegan dog food brand.
+      </p>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">1. Look for "AAFCO Complete & Balanced"</h2>
+      <p>
+        This single label tells you the food provides <strong>all 36 essential
+        nutrients</strong> dogs need. If a brand doesn't claim AAFCO complete,
+        it's a topper or treat — not a meal replacement.
+      </p>
+      <p>
+        APAC equivalents:{' '}
+        <strong>Taiwan</strong> follows AAFCO standards via 飼料管理法.{' '}
+        <strong>Singapore/Malaysia</strong> accept AAFCO labeling.{' '}
+        <strong>Japan</strong> uses CLAA (Pet Food Fair Trade Council).
+      </p>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">2. Verify these 5 critical nutrients</h2>
+      <p>Plant ingredients can fall short of these — quality brands supplement them:</p>
+      <ul class="list-disc pl-6 my-4 space-y-1">
+        <li><strong>L-carnitine</strong> — for muscle and heart health</li>
+        <li><strong>Taurine</strong> — for cardiac function (especially large breeds)</li>
+        <li><strong>Vitamin D3</strong> — best from lichen-based sources</li>
+        <li><strong>Vitamin B12</strong> — synthesized, must be added</li>
+        <li><strong>Long-chain omega-3 (DHA/EPA)</strong> — algae-derived, not flaxseed</li>
+      </ul>
+      <p>
+        Ask the brand directly: "What are your sources for these five nutrients?"
+        A confident answer = good brand. Vague answer = move on.
+      </p>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">3. Check the protein source</h2>
+      <p>Better protein sources (in order):</p>
+      <ol class="list-decimal pl-6 my-4 space-y-1">
+        <li><strong>Yeast protein</strong> (Wild Earth) — most digestible</li>
+        <li><strong>Pea + lentil + chickpea blend</strong> — complete amino acid profile</li>
+        <li><strong>Soy protein isolate</strong> — affordable but allergen-prone</li>
+        <li><strong>Wheat gluten</strong> — last choice, lower digestibility</li>
+      </ol>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">4. The 4-week transition</h2>
+      <p>Never switch overnight. Mix new food into old over 4 weeks:</p>
+      <ul class="list-disc pl-6 my-4 space-y-1">
+        <li><strong>Week 1</strong>: 25% new, 75% old</li>
+        <li><strong>Week 2</strong>: 50/50</li>
+        <li><strong>Week 3</strong>: 75% new</li>
+        <li><strong>Week 4</strong>: 100% new</li>
+      </ul>
+      <p>Watch stool consistency, energy, coat. Slow down if any concerns.</p>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">5. Vet check at 90 days</h2>
+      <p>
+        Schedule bloodwork after 3 months. Check albumin, B12, taurine, and
+        creatinine. This is your data — not anecdotes — that the diet works for
+        your specific dog.
+      </p>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">Common mistakes to avoid</h2>
+      <ul class="list-disc pl-6 my-4 space-y-1">
+        <li><strong>Using a "topper" as a meal</strong> — Green Juju, Veg-to-Bowl alone are not complete</li>
+        <li><strong>Switching cold turkey</strong> — causes GI upset and damages food trust</li>
+        <li><strong>Skipping the vet check</strong> — assumptions ≠ data</li>
+        <li><strong>Switching cats without expert input</strong> — cats are not small dogs</li>
+      </ul>
+
+      <h2 class="font-display text-2xl font-bold mt-10 mb-3">Recommended next steps</h2>
+      <ol class="list-decimal pl-6 my-4 space-y-1">
+        <li>Browse our <a href="/categories/food/" class="text-leaf-600 underline">complete vegan dog food list</a></li>
+        <li>See what's available in <a href="/where-to-buy/" class="text-leaf-600 underline">your country</a></li>
+        <li>For a vegan supplement chew rather than full diet, see <a href="/categories/treats/" class="text-leaf-600 underline">treats & chews</a></li>
+      </ol>
+
+      <hr class="my-10 border-leaf-200" />
+      <p class="text-sm text-leaf-600">
+        <em>Disclaimer: This guide is informational, not veterinary advice.
+        Always consult a vet before changing your dog's diet, especially for
+        dogs with existing health conditions, puppies, seniors, or pregnant/nursing dogs.</em>
+      </p>
+    </div>
+  </article>
+</BaseLayout>

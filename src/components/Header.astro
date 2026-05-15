@@ -1,0 +1,28 @@
+---
+import { SITE } from '../consts';
+---
+
+<header class="border-b border-leaf-100 bg-white/80 backdrop-blur sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 group">
+      <span class="text-3xl leading-none transition-transform group-hover:rotate-12">🌿</span>
+      <span class="font-display font-extrabold text-xl text-leaf-800">
+        Vegan Pet <span class="text-leaf-500">Directory</span>
+      </span>
+    </a>
+    <nav class="flex items-center gap-5 text-sm font-medium">
+      <a href="/brands" class="text-leaf-700 hover:text-leaf-900">Brands</a>
+      <a href="/where-to-buy" class="text-leaf-700 hover:text-leaf-900 hidden sm:inline">Where to buy</a>
+      <a href="/guides" class="text-leaf-700 hover:text-leaf-900 hidden sm:inline">Guides</a>
+      <a href="/about" class="text-leaf-700 hover:text-leaf-900 hidden md:inline">About</a>
+      <a
+        href="https://virida.pet"
+        target="_blank"
+        rel="noopener"
+        class="rounded-full bg-leaf-600 px-4 py-2 text-white hover:bg-leaf-700 transition"
+      >
+        {SITE.publisher} →
+      </a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const guides = [
+  {
+    href: '/guides/how-to-choose-vegan-dog-food/',
+    title: 'How to Choose Vegan Dog Food',
+    desc: 'AAFCO standards, key nutrients, transition timeline, and the questions to ask any brand.',
+    minutes: 8,
+  },
+  {
+    href: '/guides/vegan-dog-chew-comparison-asia/',
+    title: 'Best Vegan Dog Chews in Asia (2026)',
+    desc: 'Side-by-side: every vegan dog chew shipping to TW, SG, MY, HK with prices.',
+    minutes: 6,
+  },
+];
+---
+
+<BaseLayout
+  title="Guides"
+  description="Buying guides and comparisons for vegan pet products in Asia-Pacific."
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-16">
+    <h1 class="text-4xl sm:text-5xl font-display font-extrabold text-leaf-900">Guides</h1>
+    <p class="mt-3 text-lg text-leaf-700">
+      Practical, no-fluff guides for plant-based pet parents in Asia-Pacific.
+    </p>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      {guides.map((g) => (
+        <a
+          href={g.href}
+          class="rounded-2xl bg-white border border-leaf-100 p-6 hover:border-leaf-300 hover:-translate-y-0.5 transition block"
+        >
+          <p class="text-xs font-bold uppercase tracking-wider text-leaf-600">{g.minutes} min read</p>
+          <h2 class="mt-2 font-display font-bold text-xl text-leaf-900">{g.title}</h2>
+          <p class="mt-2 text-leaf-700 text-sm">{g.desc}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

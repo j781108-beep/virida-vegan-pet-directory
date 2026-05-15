@@ -1,0 +1,136 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import { CATEGORIES, COUNTRIES, SITE } from '../../consts';
+
+export async function getStaticPaths() {
+  const brands = await getCollection('brands', ({ data }) => !data.draft);
+  return brands.map((brand) => ({
+    params: { id: brand.id },
+    props: { brand },
+  }));
+}
+
+const { brand } = Astro.props;
+const { Content } = await render(brand);
+const cat = CATEGORIES.find((c) => c.slug === brand.data.category);
+
+// schema.org Product / Brand
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Brand',
+  name: brand.data.name,
+  url: brand.data.website,
+  description: brand.data.tagline,
+  ...(brand.data.foundedYear && { foundingDate: `${brand.data.foundedYear}` }),
+  ...(brand.data.headquarter && { address: brand.data.headquarter }),
+};
+---
+
+<BaseLayout
+  title={brand.data.metaTitle ?? `${brand.data.name} — Vegan Pet Brand`}
+  description={brand.data.metaDescription ?? brand.data.tagline}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+    <!-- Breadcrumb -->
+    <nav class="text-sm text-leaf-600 mb-6" aria-label="Breadcrumb">
+      <a href="/" class="hover:underline">Home</a> /
+      <a href="/brands" class="hover:underline">Brands</a> /
+      <span class="text-leaf-800">{brand.data.name}</span>
+    </nav>
+
+    <header class="flex items-start gap-5 flex-wrap">
+      {brand.data.logo ? (
+        <Image
+          src={brand.data.logo}
+          alt={`${brand.data.name} logo`}
+          width={96}
+          height={96}
+          class="size-24 rounded-2xl object-cover bg-white border border-leaf-100"
+        />
+      ) : (
+        <div class="size-24 rounded-2xl bg-leaf-100 grid place-items-center text-5xl">
+          {cat?.emoji ?? '🌿'}
+        </div>
+      )}
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h1 class="text-4xl font-display font-extrabold text-leaf-900">{brand.data.name}</h1>
+          {brand.data.featured && (
+            <span class="text-xs uppercase tracking-wider font-bold bg-leaf-600 text-white px-2 py-1 rounded-full">
+              Featured
+            </span>
+          )}
+        </div>
+        <p class="mt-2 text-lg text-leaf-700">{brand.data.tagline}</p>
+        <div class="mt-3 flex gap-3 flex-wrap">
+          <a
+            href={brand.data.website}
+            target="_blank"
+            rel="noopener nofollow sponsored"
+            class="rounded-full bg-leaf-600 text-white px-5 py-2 text-sm font-semibold hover:bg-leaf-700 transition"
+          >
+            Visit official site →
+          </a>
+          <a
+            href={`/categories/${brand.data.category}/`}
+            class="rounded-full border border-leaf-300 px-5 py-2 text-sm font-medium text-leaf-700"
+          >
+            {cat?.emoji} {cat?.label}
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Quick facts -->
+    <dl class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+      <div class="rounded-xl bg-white border border-leaf-100 p-4">
+        <dt class="text-leaf-500 text-xs font-semibold uppercase">Category</dt>
+        <dd class="mt-1 text-leaf-900 font-medium">{cat?.label}</dd>
+      </div>
+      <div class="rounded-xl bg-white border border-leaf-100 p-4">
+        <dt class="text-leaf-500 text-xs font-semibold uppercase">For</dt>
+        <dd class="mt-1 text-leaf-900 font-medium capitalize">{brand.data.species.join(', ')}</dd>
+      </div>
+      <div class="rounded-xl bg-white border border-leaf-100 p-4">
+        <dt class="text-leaf-500 text-xs font-semibold uppercase">Price</dt>
+        <dd class="mt-1 text-leaf-900 font-medium">{brand.data.priceRange}</dd>
+      </div>
+      <div class="rounded-xl bg-white border border-leaf-100 p-4">
+        <dt class="text-leaf-500 text-xs font-semibold uppercase">Available in</dt>
+        <dd class="mt-1 text-leaf-900 font-medium">
+          {brand.data.countries.map((c) => COUNTRIES[c] ?? c).slice(0, 3).join(', ')}
+          {brand.data.countries.length > 3 && ` +${brand.data.countries.length - 3}`}
+        </dd>
+      </div>
+    </dl>
+
+    {brand.data.certifications.length > 0 && (
+      <div class="mt-6 flex flex-wrap gap-2">
+        {brand.data.certifications.map((cert) => (
+          <span class="text-xs font-semibold bg-cream-100 text-leaf-700 px-3 py-1.5 rounded-full">
+            ✓ {cert}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Content body -->
+    <div class="prose prose-leaf max-w-none mt-10 text-leaf-800 leading-relaxed [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_p]:my-4 [&_a]:text-leaf-600 [&_a]:underline [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4">
+      <Content />
+    </div>
+
+    <!-- Disclosure -->
+    <p class="mt-12 text-xs text-leaf-500">
+      Information collected from publicly available sources. Last updated{' '}
+      {(brand.data.updatedDate ?? brand.data.pubDate).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })}.
+    </p>
+  </article>
+</BaseLayout>

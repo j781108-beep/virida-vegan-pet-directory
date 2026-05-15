@@ -1,0 +1,134 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandCard from '../../components/BrandCard.astro';
+import { PRIORITY_MARKETS, COUNTRIES } from '../../consts';
+
+export async function getStaticPaths() {
+  return PRIORITY_MARKETS.map((m) => ({
+    params: { country: m.code.toLowerCase() },
+    props: { market: m },
+  }));
+}
+
+const { market } = Astro.props;
+const brands = (
+  await getCollection('brands', ({ data }) =>
+    !data.draft && data.countries.includes(market.code as any)
+  )
+).sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+
+const fullName = COUNTRIES[market.code] ?? market.name;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Vegan Pet Brands in ${fullName}`,
+  description: `Comprehensive list of vegan and plant-based pet food brands available in ${fullName}.`,
+  url: `https://directory.virida.pet/where-to-buy/${market.code.toLowerCase()}/`,
+};
+---
+
+<BaseLayout
+  title={`Vegan Pet Brands in ${fullName}`}
+  description={`${brands.length} vegan & plant-based pet brands available in ${fullName}. Buying guides, where to find them, and price comparisons. Updated ${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}.`}
+  jsonLd={jsonLd}
+>
+  <section class="bg-gradient-to-b from-leaf-50 to-cream-50">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16 text-center">
+      <div class="text-7xl">{market.emoji}</div>
+      <h1 class="mt-4 text-4xl sm:text-5xl font-display font-extrabold text-leaf-900">
+        Vegan Pet Brands in {fullName}
+      </h1>
+      <p class="mt-4 text-lg text-leaf-700 max-w-2xl mx-auto">
+        {brands.length} vetted plant-based pet brands shipping to {fullName}.
+        Compare options, find local stockists, and avoid common import pitfalls.
+      </p>
+    </div>
+  </section>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <!-- Quick local context per market -->
+    {market.code === 'TW' && (
+      <div class="rounded-2xl border border-leaf-200 bg-leaf-50 p-6 mb-10">
+        <h2 class="font-display text-xl font-bold text-leaf-900">Taiwan vegan pet market notes</h2>
+        <ul class="mt-3 space-y-2 text-leaf-800 text-sm">
+          <li>• <strong>Local champion</strong>: VIRIDA is the only Taiwan-founded vegan pet brand with TW + SG distribution.</li>
+          <li>• <strong>Imports</strong>: most Western brands need to ship via 集運 (forwarder) — adds NT$300–600 per kg.</li>
+          <li>• <strong>Regulation</strong>: pet supplements fall under 飼料管理法; complete diets must declare AAFCO-equivalent on label.</li>
+          <li>• <strong>Best buying channels</strong>: virida.pet (direct), iHerb 海運, 蝦皮 cross-border.</li>
+        </ul>
+      </div>
+    )}
+
+    {market.code === 'SG' && (
+      <div class="rounded-2xl border border-leaf-200 bg-leaf-50 p-6 mb-10">
+        <h2 class="font-display text-xl font-bold text-leaf-900">Singapore vegan pet market notes</h2>
+        <ul class="mt-3 space-y-2 text-leaf-800 text-sm">
+          <li>• <strong>Most accessible APAC market</strong> for imported vegan pet brands — strong specialty retailer network.</li>
+          <li>• <strong>Local retailers</strong>: Pet Lovers Centre, Pets' Station, Whiskers' Hideout stock multiple vegan options.</li>
+          <li>• <strong>Cross-border</strong>: Shopee SIP (Shopee International Platform) opens Taiwan brands like VIRIDA without local entity setup.</li>
+          <li>• <strong>Climate</strong>: tropical humidity affects kibble shelf life — choose smaller bag sizes.</li>
+        </ul>
+      </div>
+    )}
+
+    {market.code === 'MY' && (
+      <div class="rounded-2xl border border-leaf-200 bg-leaf-50 p-6 mb-10">
+        <h2 class="font-display text-xl font-bold text-leaf-900">Malaysia vegan pet market notes</h2>
+        <ul class="mt-3 space-y-2 text-leaf-800 text-sm">
+          <li>• <strong>Growing market</strong>: vegan pet awareness rising fast in KL, Penang, Johor Bahru.</li>
+          <li>• <strong>Channels</strong>: Shopee MY cross-border, Lazada specialty sellers, independent pet stores in KL.</li>
+          <li>• <strong>Halal alignment</strong>: vegan pet food is naturally halal — strong cultural alignment for Muslim pet parents seeking halal-certified options.</li>
+          <li>• <strong>Import friction</strong>: animal-product-free items have simpler MAQIS clearance than meat products.</li>
+        </ul>
+      </div>
+    )}
+
+    {market.code === 'HK' && (
+      <div class="rounded-2xl border border-leaf-200 bg-leaf-50 p-6 mb-10">
+        <h2 class="font-display text-xl font-bold text-leaf-900">Hong Kong vegan pet market notes</h2>
+        <ul class="mt-3 space-y-2 text-leaf-800 text-sm">
+          <li>• <strong>Most premium-friendly</strong> APAC market — high disposable income, strong specialty retail.</li>
+          <li>• <strong>Top retailers</strong>: Whiskers N Paws, Pet Pet Park, PetCity carry imported European vegan brands.</li>
+          <li>• <strong>Import duty</strong>: pet food typically duty-free; only need health cert for first import.</li>
+          <li>• <strong>Apartment lifestyle</strong>: smaller dogs dominate → smaller bag sizes preferred.</li>
+        </ul>
+      </div>
+    )}
+
+    <h2 class="font-display text-2xl font-bold text-leaf-900">
+      Brands available in {fullName}
+    </h2>
+    <p class="text-leaf-600 text-sm mt-1">Sorted with featured brands first.</p>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {brands.map((b) => <BrandCard brand={b} featured={b.data.featured} />)}
+    </div>
+
+    {brands.length === 0 && (
+      <div class="mt-12 rounded-2xl border-2 border-dashed border-leaf-200 p-12 text-center">
+        <p class="text-leaf-700">
+          We don't have any brands officially listed in {fullName} yet. Know one?{' '}
+          <a href="mailto:hello@virida.pet" class="underline text-leaf-600">Tell us →</a>
+        </p>
+      </div>
+    )}
+
+    <!-- Conversion footer -->
+    <div class="mt-16 rounded-2xl bg-leaf-700 text-white p-8 text-center">
+      <h3 class="font-display text-2xl font-bold">Looking for a vegan dog chew in {fullName}?</h3>
+      <p class="mt-2 text-leaf-100">
+        VIRIDA's 10-in-1 plant-based chew ships to {fullName} with no forwarder needed.
+      </p>
+      <a
+        href="https://virida.pet"
+        target="_blank"
+        rel="noopener"
+        class="mt-5 inline-block rounded-full bg-white text-leaf-700 px-6 py-3 font-bold hover:bg-cream-50 transition"
+      >
+        Shop VIRIDA →
+      </a>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../consts';
+
+const all = await getCollection('brands', ({ data }) => !data.draft);
+const counts = Object.fromEntries(
+  CATEGORIES.map((c) => [c.slug, all.filter((b) => b.data.category === c.slug).length])
+);
+---
+
+<BaseLayout
+  title="Browse by Category"
+  description="Browse vegan pet brands by category — complete food, treats, supplements, dental care, toys, and grooming."
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <h1 class="text-4xl font-display font-extrabold text-leaf-900">Categories</h1>
+    <p class="mt-2 text-leaf-700">All vegan pet product categories we track.</p>
+
+    <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {CATEGORIES.map((c) => (
+        <a
+          href={`/categories/${c.slug}/`}
+          class="rounded-2xl bg-white border border-leaf-100 p-6 hover:border-leaf-300 hover:-translate-y-0.5 transition"
+        >
+          <div class="text-5xl">{c.emoji}</div>
+          <div class="mt-3 font-display font-bold text-xl text-leaf-900">{c.label}</div>
+          <div class="text-sm text-leaf-600 mt-1">{counts[c.slug]} brands</div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

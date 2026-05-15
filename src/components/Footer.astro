@@ -1,0 +1,48 @@
+---
+import { SITE } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t border-leaf-100 bg-leaf-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid gap-8 sm:grid-cols-4 text-sm">
+    <div class="sm:col-span-2">
+      <div class="font-display font-extrabold text-leaf-800 text-lg">🌿 Vegan Pet Directory</div>
+      <p class="mt-2 text-leaf-700 max-w-md">
+        Curated by <a href="https://virida.pet" class="underline">VIRIDA</a> —
+        a TW→SEA cross-border pet brand making vegan 10-in-1 dog chews. We
+        catalog plant-based pet brands so vegan pet parents can shop with
+        confidence.
+      </p>
+    </div>
+    <div>
+      <div class="font-semibold text-leaf-800">Browse</div>
+      <ul class="mt-2 space-y-1 text-leaf-700">
+        <li><a href="/brands" class="hover:underline">All brands</a></li>
+        <li><a href="/categories" class="hover:underline">Categories</a></li>
+        <li><a href="/where-to-buy" class="hover:underline">Where to buy</a></li>
+        <li><a href="/guides" class="hover:underline">Guides</a></li>
+        <li><a href="/about" class="hover:underline">About</a></li>
+        <li><a href="/rss.xml" class="hover:underline">RSS feed</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-semibold text-leaf-800">Submit</div>
+      <ul class="mt-2 space-y-1 text-leaf-700">
+        <li>
+          <a
+            href="mailto:hello@virida.pet?subject=Submit%20a%20vegan%20pet%20brand"
+            class="hover:underline"
+          >Add your brand</a>
+        </li>
+        <li>
+          <a href="https://github.com" class="hover:underline" target="_blank" rel="noopener">
+            Open source
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-leaf-100 py-4 text-center text-xs text-leaf-600">
+    © {year} {SITE.publisher} · Built with Astro & love for animals 🐾
+  </div>
+</footer>

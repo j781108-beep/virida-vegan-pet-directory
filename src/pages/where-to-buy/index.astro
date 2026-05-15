@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PRIORITY_MARKETS, COUNTRIES } from '../../consts';
+
+const all = await getCollection('brands', ({ data }) => !data.draft);
+const counts = Object.fromEntries(
+  PRIORITY_MARKETS.map((m) => [
+    m.code,
+    all.filter((b) => b.data.countries.includes(m.code as any)).length,
+  ])
+);
+---
+
+<BaseLayout
+  title="Where to Buy Vegan Pet Food in Asia-Pacific"
+  description="Country-by-country guide to buying vegan pet food and treats across Taiwan, Singapore, Malaysia, Hong Kong. Local stockists, import tips, and pricing."
+>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+    <h1 class="text-4xl sm:text-5xl font-display font-extrabold text-leaf-900">
+      Where to buy in Asia-Pacific
+    </h1>
+    <p class="mt-3 text-lg text-leaf-700 max-w-2xl">
+      Most vegan pet brands are US/UK-based — finding them in APAC takes effort.
+      We've mapped which brands actually ship where, and through which channels.
+    </p>
+
+    <div class="mt-10 grid gap-5 sm:grid-cols-2">
+      {PRIORITY_MARKETS.map((m) => (
+        <a
+          href={`/where-to-buy/${m.code.toLowerCase()}/`}
+          class="rounded-2xl bg-white border border-leaf-100 p-6 hover:border-leaf-300 hover:-translate-y-0.5 transition flex items-start gap-4"
+        >
+          <div class="text-5xl">{m.emoji}</div>
+          <div class="flex-1">
+            <div class="font-display font-bold text-xl text-leaf-900">
+              {COUNTRIES[m.code] ?? m.name}
+            </div>
+            <div class="text-sm text-leaf-600 mt-1">
+              {counts[m.code]} brands available
+            </div>
+            <div class="mt-3 text-sm text-leaf-700">
+              {m.shopee && <span class="mr-2">✓ Shopee available</span>}
+              {m.primary && <span>★ VIRIDA primary market</span>}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

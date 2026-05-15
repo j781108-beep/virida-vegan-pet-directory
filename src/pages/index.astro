@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandCard from '../components/BrandCard.astro';
+import { SITE, CATEGORIES, PRIORITY_MARKETS, COUNTRIES } from '../consts';
+
+const allBrands = (await getCollection('brands', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const featured = allBrands.filter((b) => b.data.featured);
+const newest = allBrands.filter((b) => !b.data.featured).slice(0, 8);
+
+// Schema.org CollectionPage + ItemList for SEO
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: SITE.title,
+  description: SITE.description,
+  url: SITE.url,
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.publisher,
+    url: 'https://virida.pet',
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: allBrands.length,
+    itemListElement: allBrands.slice(0, 10).map((b, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      url: `${SITE.url}/brands/${b.id}/`,
+      name: b.data.name,
+    })),
+  },
+};
+---
+
+<BaseLayout title={SITE.title} description={SITE.description} jsonLd={jsonLd}>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-leaf-50 to-cream-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
+      <p class="inline-block text-xs font-bold uppercase tracking-wider text-leaf-600 bg-leaf-100 px-3 py-1 rounded-full">
+        🌏 Asia-Pacific edition · Updated weekly
+      </p>
+      <h1 class="mt-5 text-4xl sm:text-6xl font-display font-extrabold text-leaf-900 leading-tight">
+        Every vegan pet brand<br />you can buy in <span class="text-leaf-500">Asia</span>.
+      </h1>
+      <p class="mt-6 text-lg text-leaf-700 max-w-2xl mx-auto">
+        {allBrands.length} vetted plant-based pet brands, mapped to where they
+        actually ship in Taiwan, Singapore, Malaysia, and Hong Kong.
+        Hand-picked. Fact-checked. No paid placements.
+      </p>
+      <div class="mt-8 flex gap-3 justify-center flex-wrap">
+        <a href="/where-to-buy" class="rounded-full bg-leaf-600 text-white px-6 py-3 font-semibold hover:bg-leaf-700 transition">
+          🌏 Find brands in my country →
+        </a>
+        <a href="/brands" class="rounded-full border border-leaf-300 px-6 py-3 font-semibold text-leaf-700 hover:bg-white transition">
+          Browse all brands
+        </a>
+      </div>
+
+      <!-- Country quick links -->
+      <div class="mt-10 flex gap-2 justify-center flex-wrap">
+        {PRIORITY_MARKETS.map((m) => (
+          <a
+            href={`/where-to-buy/${m.code.toLowerCase()}/`}
+            class="text-sm rounded-full bg-white border border-leaf-200 px-4 py-1.5 hover:border-leaf-400 transition"
+          >
+            <span class="mr-1">{m.emoji}</span>
+            {COUNTRIES[m.code]}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured -->
+  {featured.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <div class="flex items-baseline justify-between">
+        <h2 class="text-3xl font-display font-bold text-leaf-900">⭐ Featured brands</h2>
+        <a href="/brands" class="text-sm text-leaf-600 hover:underline">View all →</a>
+      </div>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {featured.map((b) => <BrandCard brand={b} featured />)}
+      </div>
+    </section>
+  )}
+
+  <!-- Categories -->
+  <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <h2 class="text-3xl font-display font-bold text-leaf-900">Browse by category</h2>
+    <div class="mt-6 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+      {CATEGORIES.map((c) => (
+        <a
+          href={`/categories/${c.slug}/`}
+          class="rounded-2xl bg-white border border-leaf-100 p-5 text-center hover:border-leaf-300 hover:-translate-y-0.5 transition"
+        >
+          <div class="text-4xl">{c.emoji}</div>
+          <div class="mt-2 font-semibold text-leaf-800 text-sm">{c.label}</div>
+          <div class="text-xs text-leaf-500 mt-1">
+            {allBrands.filter((b) => b.data.category === c.slug).length} brands
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Newest -->
+  {newest.length > 0 && (
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+      <h2 class="text-3xl font-display font-bold text-leaf-900">Recently added</h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {newest.map((b) => <BrandCard brand={b} />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>

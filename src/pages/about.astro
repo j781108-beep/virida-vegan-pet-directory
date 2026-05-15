@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="Why we built the Vegan Pet Directory — a curated catalog of plant-based pet brands by VIRIDA."
+>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <h1 class="text-4xl font-display font-extrabold text-leaf-900">Why this directory exists</h1>
+
+    <div class="mt-8 space-y-5 text-lg text-leaf-800 leading-relaxed">
+      <p>
+        Vegan pet parents face a frustrating problem: there's no single place to
+        discover trustworthy plant-based food, treats, and supplements for their
+        animals. Information is scattered across Reddit threads, Facebook groups,
+        and outdated blog posts.
+      </p>
+
+      <p>
+        <strong>The Vegan Pet Directory</strong> exists to fix that. We catalog
+        every legitimate vegan pet brand we can find — globally — and check the
+        facts so you don't have to.
+      </p>
+
+      <h2 class="font-display text-2xl font-bold text-leaf-900 pt-4">How brands get listed</h2>
+      <p>
+        We list brands that meet three criteria:
+      </p>
+      <ul class="list-disc pl-6 space-y-2">
+        <li>Products are 100% plant-based (no meat, dairy, or animal by-products).</li>
+        <li>The brand is currently active and shipping to at least one country.</li>
+        <li>The website is live and the company is contactable.</li>
+      </ul>
+
+      <h2 class="font-display text-2xl font-bold text-leaf-900 pt-4">Who runs this</h2>
+      <p>
+        This directory is published by{' '}
+        <a href="https://virida.pet" class="text-leaf-600 underline">VIRIDA</a> —
+        a Taiwan-based vegan pet brand making a 10-in-1 plant-based dog chew. We
+        sell our own product, but we list every competitor we know of, with no
+        paid placements. The directory is open-source and built on Astro.
+      </p>
+
+      <h2 class="font-display text-2xl font-bold text-leaf-900 pt-4">Submit a brand</h2>
+      <p>
+        Know a vegan pet brand we missed? Email{' '}
+        <a href="mailto:hello@virida.pet" class="text-leaf-600 underline">
+          hello@virida.pet
+        </a>{' '}
+        with the brand name, website, and 1-2 sentences about what they make.
+        We'll review and add it within 7 days.
+      </p>
+    </div>
+  </article>
+</BaseLayout>
