@@ -1,0 +1,6 @@
+# Wrangler config for Cloudflare Pages deployment.
+# Run `wrangler pages deploy dist` after `npm run build` to deploy manually,
+# or let Cloudflare Pages auto-build from git (recommended).
+name = "virida-vegan-pet-directory"
+compatibility_date = "2026-05-15"
+pages_build_output_dir = "./dist"
