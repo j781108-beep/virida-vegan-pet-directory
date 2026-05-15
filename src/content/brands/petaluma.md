@@ -1,6 +1,6 @@
 ---
 name: Petaluma
-tagline: US plant-based dog food using whole-food ingredients (peanuts, oats, sweet potato) with veterinary nutritionist formulation.
+tagline: US whole-food plant-based dog food formulated by a board-certified veterinary nutritionist.
 website: https://petaluma.com
 category: food
 species: ['dog']
