@@ -1,176 +1,137 @@
-# 🚀 Deployment guide — go live in 30 minutes
+# 🚀 Deployment reference — what's already set up
 
-This is your **one-time setup checklist**. After this, every `git push` auto-deploys in ~60 seconds.
-
-> **Total time**: 30–40 minutes
-> **Cost**: $0 (Cloudflare Pages + Plausible free tier)
-> **Your steps marked 👤. My steps marked 🤖.**
+> **Status: LIVE since 2026-05-15** at https://directory.virida.pet
+> This file documents the actual production setup. Use it to onboard
+> teammates, debug issues, or migrate the project. Not a "todo" list —
+> everything below is already done.
 
 ---
 
-## 1. GitHub setup (10 min)
+## 📋 Quick status
 
-### 👤 Step 1.1 — Authenticate gh CLI (one-time, opens browser)
+| Component | Status | Where |
+|---|---|---|
+| GitHub repo | ✅ public | github.com/j781108-beep/virida-vegan-pet-directory |
+| Cloudflare Worker | ✅ auto-deploy on push | viridapet@gmail.com account |
+| Custom domain | ✅ HTTPS active | directory.virida.pet |
+| Plausible analytics | ✅ tracking | hardcoded in `src/components/Analytics.astro` |
+| Google Search Console | ✅ verified, sitemap submitted | HTML file method |
+| Auto-deploy on `git push` | ✅ ~60s rebuild | Cloudflare Workers Builds (native git integration) |
 
-Open PowerShell and run:
+**Total recurring cost**: $0 (Cloudflare free tier + 30-day Plausible trial → $9/mo if kept)
+
+---
+
+## 1. GitHub repo
+
+Public repo at `j781108-beep/virida-vegan-pet-directory`. Pushes to `main` trigger an auto-deploy on Cloudflare.
+
+To clone elsewhere:
 ```powershell
-gh auth login
+gh repo clone j781108-beep/virida-vegan-pet-directory
+cd virida-vegan-pet-directory
+npm install
+npm run dev   # http://localhost:4321
 ```
-Pick: **GitHub.com → HTTPS → Login with a web browser → Y**.
-A browser tab opens. Approve. Done.
 
-### 🤖 Step 1.2 — Tell me when done; I'll run:
+---
+
+## 2. Cloudflare Workers (Static Assets)
+
+Project name: `virida-vegan-pet-directory`
+Account: **viridapet@gmail.com** (NOT j781108@gmail.com — important for billing & DNS)
+Config: `wrangler.toml` uses `[assets] directory = "./dist"` format (assets-only Worker, no JS handler)
+
+**Build settings** (configured in Cloudflare UI → Workers → Settings → Build):
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+- Production branch: `main`
+
+**To redeploy manually**: just push any commit to `main`. Cloudflare rebuilds in ~60s.
+
+---
+
+## 3. Custom domain `directory.virida.pet`
+
+The `virida.pet` zone lives in the same Cloudflare account (viridapet@gmail.com). The custom domain is bound in **Worker → Domains tab** — Cloudflare auto-created the CNAME and SSL cert.
+
+To verify:
 ```powershell
-cd C:\Users\j7811\Projects\virida-vegan-pet-directory
-gh repo create virida-vegan-pet-directory --public --source=. --push --description "APAC vegan pet brand directory · curated by VIRIDA"
-```
-This creates the GitHub repo and pushes the code.
-
----
-
-## 2. Cloudflare Pages setup (10 min)
-
-### 👤 Step 2.1 — Create Cloudflare account (skip if you have one)
-Go to https://dash.cloudflare.com/sign-up → use your email → verify.
-
-### 👤 Step 2.2 — Connect GitHub to Cloudflare Pages
-1. Go to https://dash.cloudflare.com → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
-2. Click **Connect GitHub**, authorize Cloudflare to access your repos.
-3. Select `virida-vegan-pet-directory`.
-4. **Build settings** (Cloudflare auto-detects most of this):
-   - **Framework preset**: Astro
-   - **Build command**: `npm run build`
-   - **Build output directory**: `dist`
-   - **Root directory**: `/` (default)
-5. Click **Save and Deploy**. Wait 60–90 seconds for first build.
-6. You get a URL like `virida-vegan-pet-directory.pages.dev` — site is live ✅
-
-### 👤 Step 2.3 — Get Cloudflare credentials for GitHub Actions (optional but recommended)
-This enables auto-deploy via GitHub Actions (faster than the default git connector for some workflows).
-
-1. https://dash.cloudflare.com/profile/api-tokens → **Create Token**
-2. Use template **"Edit Cloudflare Workers"** → **Continue to summary** → **Create Token**
-3. Copy the token (you'll only see it once).
-4. Get your Account ID: https://dash.cloudflare.com → right sidebar → **Account ID**.
-5. Go to your GitHub repo → **Settings** → **Secrets and variables** → **Actions**:
-   - **New repository secret** → Name: `CLOUDFLARE_API_TOKEN`, Value: (paste token)
-   - **New repository secret** → Name: `CLOUDFLARE_ACCOUNT_ID`, Value: (paste account ID)
-
----
-
-## 3. Custom domain `directory.virida.pet` (5 min)
-
-### 👤 Step 3.1 — Add custom domain in Cloudflare Pages
-1. Pages dashboard → your project → **Custom domains** → **Set up a custom domain**.
-2. Enter: `directory.virida.pet` → **Continue**.
-3. Cloudflare shows you the DNS record to create.
-
-### 👤 Step 3.2 — Add the DNS record
-**If virida.pet is on Cloudflare DNS already**: Cloudflare adds it automatically. Skip to 3.3.
-
-**If virida.pet is on another DNS provider** (GoDaddy, Namecheap, etc.):
-- **Type**: CNAME
-- **Name**: `directory`
-- **Target**: `virida-vegan-pet-directory.pages.dev`
-- **TTL**: Auto (or 3600)
-
-Save the record. DNS propagation: 5 minutes to 1 hour.
-
-### 👤 Step 3.3 — Verify
-Visit https://directory.virida.pet — should load the site with HTTPS (Cloudflare auto-issues SSL cert).
-
----
-
-## 4. Plausible Analytics (5 min, optional but recommended)
-
-### 👤 Step 4.1 — Sign up
-Go to https://plausible.io → Start trial (30 days free, then $9/mo for 10K pageviews).
-
-> **Free alternative**: self-host Plausible on a $5/mo VPS, or use [Umami](https://umami.is) (free, self-hosted).
-
-### 👤 Step 4.2 — Add domain
-1. Plausible dashboard → **Add a website**
-2. Domain: `directory.virida.pet`
-3. Reporting timezone: Asia/Taipei
-
-### 👤 Step 4.3 — Add to Cloudflare Pages env vars
-1. Cloudflare Pages → your project → **Settings** → **Environment variables**
-2. Add: `PUBLIC_PLAUSIBLE_DOMAIN` = `directory.virida.pet`
-3. Save → trigger redeploy (Pages → Deployments → Retry).
-
-Analytics start working immediately on next visit.
-
----
-
-## 5. Google Search Console (5 min)
-
-### 👤 Step 5.1 — Add property
-1. Go to https://search.google.com/search-console (use any Google account)
-2. **Add property** → **URL prefix** → `https://directory.virida.pet/`
-3. **Verify** → choose **HTML tag** method → copy the `<meta>` tag.
-
-### 👤 Step 5.2 — Add verification meta tag
-Tell me the tag content and I'll add it to `BaseHead.astro`. Or add it yourself:
-
-```astro
-<!-- In src/components/BaseHead.astro, after <title> -->
-<meta name="google-site-verification" content="YOUR_TOKEN_HERE" />
+nslookup directory.virida.pet 8.8.8.8
+# Should resolve to Cloudflare anycast IPs (104.21.x.x, 172.67.x.x)
 ```
 
-Then `git push` → auto-deploys → click **Verify** in Search Console.
+---
 
-### 👤 Step 5.3 — Submit sitemap
-1. Search Console → **Sitemaps** (left sidebar)
-2. Enter: `sitemap-index.xml`
-3. **Submit**.
+## 4. Plausible Analytics
 
-Google starts indexing within 24–48 hours.
+**Site key snippet is hardcoded** in `src/components/Analytics.astro`:
+```html
+<script async src="https://plausible.io/js/pa-GC0oalG_KDJOzZjB7Sxn0.js"></script>
+```
+
+Loads only in production builds (NOT during `npm run dev`). To switch sites later (self-host, change Plausible account, etc.), edit that file.
+
+Dashboard: https://plausible.io/directory.virida.pet
 
 ---
 
-## 6. Bing Webmaster Tools (3 min, easy SEO win)
+## 5. Google Search Console
 
-Same as Google but for Bing (Yahoo APAC traffic comes through Bing too).
+**Verification method**: HTML file at `public/googlec39c9c3b57af1f6c.html` (committed to repo, served from site root)
 
-1. https://www.bing.com/webmasters → sign in with Microsoft account.
-2. **Import from Google Search Console** (one-click) — they share the verification.
-3. Add property: `https://directory.virida.pet`
-4. Submit sitemap: `https://directory.virida.pet/sitemap-index.xml`
+**Sitemap**: `https://directory.virida.pet/sitemap-index.xml` (auto-generated by `@astrojs/sitemap`, submitted once)
+
+Dashboard: https://search.google.com/search-console (property: directory.virida.pet)
+
+⚠️ **Do not delete** the HTML verification file — removing it un-verifies the property.
 
 ---
 
-## ✅ Done — what to expect
+## 6. Bing Webmaster Tools (recommended, not yet done)
+
+Easy SEO win — Yahoo APAC traffic flows through Bing.
+
+1. https://www.bing.com/webmasters → sign in
+2. **Import from Google Search Console** (one-click — shares verification)
+3. Submit sitemap: `https://directory.virida.pet/sitemap-index.xml`
+
+---
+
+## 📊 SEO timeline expectations
 
 | When | What |
 |---|---|
-| **Today** | Site live at directory.virida.pet ✅ |
-| **24h** | Google starts crawling (Search Console shows first hits) |
-| **3–7 days** | First pages indexed, appearing in Google results for branded terms ("VIRIDA vegan dog chew") |
-| **2–4 weeks** | Long-tail terms start ranking ("vegan dog food Singapore", "Ami Cat Hong Kong") |
-| **2–3 months** | First measurable organic traffic (~100–500 visits/mo) if you keep adding brands weekly |
-| **6 months** | If on growth track per FOUNDER_NOTES.md → 1K–3K visits/mo |
+| 24h after launch | Google starts crawling (Search Console shows first hits) |
+| 3–7 days | First pages indexed; branded queries ("VIRIDA vegan dog chew") rank |
+| 2–4 weeks | Long-tail terms start ranking ("vegan dog food Singapore") |
+| 2–3 months | ~100–500 organic visits/mo if adding brands weekly |
+| 6 months | 1K–3K visits/mo if on growth track per FOUNDER_NOTES.md |
 
 ---
 
 ## 🆘 Troubleshooting
 
-**"gh repo create" fails with auth error**
-→ Re-run `gh auth login`. Choose HTTPS, browser auth.
+**Push to main but site didn't update**
+→ Check https://dash.cloudflare.com → Workers & Pages → virida-vegan-pet-directory → Deployments. Look for the latest build status. If failed, expand the build log to see the error.
 
-**Cloudflare Pages build fails on first deploy**
-→ Check Node version. In Pages → Settings → Environment variables, set `NODE_VERSION=20`.
+**Cloudflare build fails with Node version error**
+→ Workers → Settings → Variables → set `NODE_VERSION=20`.
 
 **DNS not resolving after 1 hour**
-→ Run `nslookup directory.virida.pet 8.8.8.8`. If still fails, recheck CNAME target. Some registrars need DNS to be set on the apex `virida.pet` first via NS records pointing to Cloudflare.
+→ Run `nslookup directory.virida.pet 8.8.8.8`. If still fails, confirm the custom domain is still bound in Cloudflare (sometimes a removed-and-re-added domain loses its CNAME).
 
 **Plausible script blocked by adblockers**
-→ Normal — affects ~30% of traffic measurement. Either accept (Plausible counts what it can) or self-host Plausible at `analytics.virida.pet` (set `PUBLIC_PLAUSIBLE_HOST` env var).
+→ Normal — affects ~30% of traffic. Either accept the gap or self-host Plausible (set `PUBLIC_PLAUSIBLE_HOST` and update `Analytics.astro` to use it).
+
+**Schema validation fails on `npm run build`**
+→ Check `src/content.config.ts` for current schema. Common gotchas: `tagline` ≤ 120 chars, `metaDescription` ≤ 160 chars, `category` must be one of the 6 enum values.
 
 ---
 
 ## 📞 Where to ask for help
 
 - **Astro**: https://astro.build/chat (Discord)
-- **Cloudflare Pages**: https://discord.cloudflare.com
-- **Plausible**: hello@plausible.io (responds in <24h)
-- **This repo**: open an issue at github.com/your-user/virida-vegan-pet-directory
+- **Cloudflare Workers**: https://discord.cloudflare.com
+- **Plausible**: hello@plausible.io
+- **This repo**: open an issue at github.com/j781108-beep/virida-vegan-pet-directory
